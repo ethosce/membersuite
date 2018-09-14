@@ -32,17 +32,14 @@ class MsClient extends SoapClient {
     try {
       $r = parent::__soapCall($function_name, $arguments, $options, $input_headers, $output_headers);
     } catch (\SoapFault $f) {
-      watchdog('membersuite', 'Error calling MemberSuite @call: @message', array('@call' => $function_name, '@message' => $f->getMessage()));
       throw $f;
     } catch (\Exception $e) {
-      watchdog('membersuite', 'Error calling MemberSuite @call: @message', array('@call' => $function_name, '@message' => $e->getMessage()));
       throw $e;
     }
 
     $prop = "{$function_name}Result";
     if (!empty($r->$prop->Errors->ConciergeError)) {
       trigger_error(t('Error calling MemberSuite @call: @message', array('@call' => $function_name, '@message' => $r->$prop->Errors->ConciergeError[0]->Message)), E_USER_WARNING);
-      watchdog('membersuite', 'Error calling MemberSuite @call: @message', array('@call' => $function_name, '@message' => $r->$prop->Errors->ConciergeError[0]->Message));
     }
     return $r;
   }
