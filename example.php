@@ -49,4 +49,16 @@ ZQWzo8MmVp2Q1/UDN9ZEtA6K
 
 $client->setMsAuth($access_id, $secret_key, $assoc_id, $assoc_key, $certificate_id, $private_key);
 
-$client->WhoAmI();
+// Basic API call.
+$response = $client->WhoAmI();
+
+// Signed API call.
+$loginAs = 'myuser@example.com';
+$signature = $client->msDigitalSignature($loginAs);
+
+$r = $client->CreatePortalSecurityToken([
+  'portalUserName' => $loginAs,
+  'signingCertificateId' => $client->CertificateId,
+  'signature' => $signature,
+  ]);
+
