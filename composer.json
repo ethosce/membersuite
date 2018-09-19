@@ -1,0 +1,9 @@
+{
+  "name": "ethosce/membersuite",
+  "description": "MemberSuite PHP API",
+  "autoload": {
+    "psr-4": {
+      "MemberSuite\\": "src/MemberSuite/"
+    }
+  }
+}

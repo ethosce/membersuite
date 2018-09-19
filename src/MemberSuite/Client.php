@@ -1,61 +1,68 @@
 <?php
 
+namespace MemberSuite;
+
 /**
  * MemberSuite SOAP client.
  */
-class MsClient extends SoapClient {
+class Client extends \SoapClient {
 
   private $AccessKeyId;
+  private $SecretAccessKey;
   private $AssociationId;
-  private $SecretKey;
-  private $private_key;
+  private $AssociationKey;
+  private $PrivateKey;
+
   /** @var string The certificate ID. */
-  public $certificate_id;
+  public $CertificateId;
+
+  function __construct($wsdl = NULL, $options = array()) {
+    if (empty($wsdl)) {
+      $wsdl = 'https://soap.membersuite.com/mex';
+    }
+    $options['features'] = SOAP_SINGLE_ELEMENT_ARRAYS;
+    parent::SoapClient($wsdl, $options);
+  }
 
   /**
    * Set authentication for the client.
    *
    * @param string $access_id
    *   MemberSuite access ID.
+   * @param string $secret_key
+   *   MemberSuite secret key.
    *
    * @param string $assoc_id
    *   MemberSuite association ID.
+   * @param string $assoc_key
+   *   MemberSuite association key.
    *
-   * @param string $secret_key
-   *   MemberSuite secret key.
-   */
-  function setMsAuth($access_id, $assoc_id, $secret_key) {
-    $this->AccessKeyId = $access_id;
-    $this->AssociationId = $assoc_id;
-    $this->SecretKey = $secret_key;
-  }
-
-  /**
-   * Set the public and private keys for digital signatures.
-   *
-   * @param string $key
+   * @param string $certificate_id
+   *   The matching certificate ID from MemberSuite.
+   * @param string $private_key
    *   Private key in PEM format. You can use a tool like
    *   https://superdry.apphb.com/tools/online-rsa-key-converter or
    *   https://github.com/MisterDaneel/PemToXml.git to convert the XML key from
    *   MemberSuite.
-   *
-   * @param string $id
-   *   The matching certificate ID from MemberSuite.
    */
-  function setMsKeys($key, $id) {
-    $this->private_key = $key;
-    $this->certificate_id = $id;
+  function setMsAuth($access_id, $secret_key, $assoc_id, $assoc_key, $certificate_id, $private_key) {
+    $this->AccessKeyId = $access_id;
+    $this->SecretAccessKey = $secret_key;
+    $this->AssociationId = $assoc_id;
+    $this->AssociationKey = $assoc_key;
+    $this->PrivateKey = $private_key;
+    $this->CertificateId = $certificate_id;
   }
 
   function authenticate($call) {
-    $signature = $this->GenerateMessageSignature($call, $this->SecretKey, $this->AssociationId);
+    $signature = $this->GenerateMessageSignature($call, $this->SecretAccessKey, $this->AssociationId);
 
     $header = array();
     $header['AccessKeyId'] = $this->AccessKeyId;
     $header['AssociationId'] = $this->AssociationId;
     $header['Signature'] = $signature;
 
-    $soapHeader = new SOAPHeader('http://membersuite.com/schemas', 'ConciergeRequestHeader', $header);
+    $soapHeader = new \SOAPHeader('http://membersuite.com/schemas', 'ConciergeRequestHeader', $header);
     $this->__setSoapHeaders(array($soapHeader));
   }
 
@@ -75,7 +82,7 @@ class MsClient extends SoapClient {
 
     $prop = "{$function_name}Result";
     if (!empty($r->$prop->Errors->ConciergeError)) {
-      trigger_error(t('Error calling MemberSuite @call: @message', array('@call' => $function_name, '@message' => $r->$prop->Errors->ConciergeError[0]->Message)), E_USER_WARNING);
+      trigger_error(sprintf('Error calling MemberSuite %s: %s', $function_name, $r->$prop->Errors->ConciergeError[0]->Message), E_USER_WARNING);
     }
     return $r;
   }
