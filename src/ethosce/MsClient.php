@@ -5,10 +5,46 @@
  */
 class MsClient extends SoapClient {
 
+  private $AccessKeyId;
+  private $AssociationId;
+  private $SecretKey;
+  private $private_key;
+  /** @var string The certificate ID. */
+  public $certificate_id;
+
+  /**
+   * Set authentication for the client.
+   *
+   * @param string $access_id
+   *   MemberSuite access ID.
+   *
+   * @param string $assoc_id
+   *   MemberSuite association ID.
+   *
+   * @param string $secret_key
+   *   MemberSuite secret key.
+   */
   function setMsAuth($access_id, $assoc_id, $secret_key) {
     $this->AccessKeyId = $access_id;
     $this->AssociationId = $assoc_id;
     $this->SecretKey = $secret_key;
+  }
+
+  /**
+   * Set the public and private keys for digital signatures.
+   *
+   * @param string $key
+   *   Private key in PEM format. You can use a tool like
+   *   https://superdry.apphb.com/tools/online-rsa-key-converter or
+   *   https://github.com/MisterDaneel/PemToXml.git to convert the XML key from
+   *   MemberSuite.
+   *
+   * @param string $id
+   *   The matching certificate ID from MemberSuite.
+   */
+  function setMsKeys($key, $id) {
+    $this->private_key = $key;
+    $this->certificate_id = $id;
   }
 
   function authenticate($call) {
@@ -99,6 +135,26 @@ class MsClient extends SoapClient {
     }
     MsClient::msSetValueTypes($out['KeyValueOfstringanyType']);
     return $out;
+  }
+
+  /**
+   * Sign a message, the MemberSuite way.
+   *
+   * @todo This uses SHA-1 which is insecure: https://shattered.io
+   *
+   * @param string $data
+   *   The data to sign
+   * @return mixed
+   *   String, or FALSE if signing failed.
+   */
+  function msDigitalSignature($data) {
+    $signature = NULL;
+    if (openssl_sign($data, $signature, $this->private_key, OPENSSL_ALGO_SHA1)) {
+      return $signature;
+    }
+    else {
+      return FALSE;
+    }
   }
 
 }
