@@ -62,3 +62,16 @@ $r = $client->CreatePortalSecurityToken([
   'signature' => $signature,
   ]);
 
+// Saving objects with KeyValueOfstringanyType fields.
+$fields = array(
+  'SomeField' => '12345',
+  'SomeDate' => '2018-01-01',
+  'Flag' => TRUE,
+);
+
+$client->Save([
+  'objectToSave' => [
+    'ClassType' => 'SomeClass',
+    'Fields' => $client->msGenerateFields($fields),
+  ]]
+);

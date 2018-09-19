@@ -110,13 +110,13 @@ class Client extends \SoapClient {
     foreach ($items as &$item) {
       if (is_scalar($item['Value'])) {
         if (is_bool($item['Value'])) {
-          $item['Value'] = new SoapVar($item['Value'], XSD_BOOLEAN, 'boolean', 'http://www.w3.org/2001/XMLSchema');
+          $item['Value'] = new \SoapVar($item['Value'], XSD_BOOLEAN, 'boolean', 'http://www.w3.org/2001/XMLSchema');
         }
         elseif (!is_numeric($item['Value']) && strtotime($item['Value']) !== FALSE) {
-          $item['Value'] = new SoapVar($item['Value'], XSD_DATETIME, 'dateTime', 'http://www.w3.org/2001/XMLSchema');
+          $item['Value'] = new \SoapVar($item['Value'], XSD_DATETIME, 'dateTime', 'http://www.w3.org/2001/XMLSchema');
         }
         else {
-          $item['Value'] = new SoapVar($item['Value'], XSD_STRING, 'string', 'http://www.w3.org/2001/XMLSchema');
+          $item['Value'] = new \SoapVar($item['Value'], XSD_STRING, 'string', 'http://www.w3.org/2001/XMLSchema');
         }
       }
     }
@@ -131,7 +131,7 @@ class Client extends \SoapClient {
    * @return array
    *   Array containing KeyValueOfstringanyType objects.
    */
-  static function msGenerateFields($array) {
+  function msGenerateFields($array) {
     $out = array();
     foreach ($array as $key => $value) {
       $out['KeyValueOfstringanyType'][] = array(
@@ -139,7 +139,7 @@ class Client extends \SoapClient {
         'Value' => $value,
       );
     }
-    MsClient::msSetValueTypes($out['KeyValueOfstringanyType']);
+    $this->msSetValueTypes($out['KeyValueOfstringanyType']);
     return $out;
   }
 
