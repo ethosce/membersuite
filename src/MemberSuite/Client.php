@@ -155,7 +155,7 @@ class Client extends \SoapClient {
    */
   function msDigitalSignature($data) {
     $signature = NULL;
-    if (openssl_sign($data, $signature, $this->private_key, OPENSSL_ALGO_SHA1)) {
+    if (openssl_sign($data, $signature, $this->PrivateKey, OPENSSL_ALGO_SHA1)) {
       return $signature;
     }
     else {
