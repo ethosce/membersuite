@@ -16,6 +16,8 @@ $assoc_key = '30303';
 
 // Signing key/certificate.
 $certificate_id = 'WU0MWI1ODM3OTFhCg';
+// You can use a tool like https://github.com/MisterDaneel/PemToXml.git to
+// convert the XML key from MemberSuite.
 $private_key = '-----BEGIN PRIVATE KEY-----
 MIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQDTTPFwSiVbQMiA
 Dv7Hz4fdNTdUWOM/5ek5haG99iqe2D6DQqW6kWVRkFkEoBq0WdHq2jfcuCgFxEDz

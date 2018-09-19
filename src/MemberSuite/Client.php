@@ -41,7 +41,6 @@ class Client extends \SoapClient {
    *   The matching certificate ID from MemberSuite.
    * @param string $private_key
    *   Private key in PEM format. You can use a tool like
-   *   https://superdry.apphb.com/tools/online-rsa-key-converter or
    *   https://github.com/MisterDaneel/PemToXml.git to convert the XML key from
    *   MemberSuite.
    */
