@@ -106,7 +106,7 @@ class Client extends \SoapClient {
    *
    * @param type $items
    */
-  static function msSetValueTypes(&$items) {
+  function msSetValueTypes(&$items) {
     foreach ($items as &$item) {
       if (is_scalar($item['Value'])) {
         if (is_bool($item['Value'])) {
