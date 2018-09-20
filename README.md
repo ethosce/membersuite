@@ -8,6 +8,6 @@ Install
 ---
 `composer require ethosce/membersuite`
 
-Use
+Usage
 ---
 See https://github.com/ethosce/membersuite/blob/master/example.php
