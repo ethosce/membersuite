@@ -163,6 +163,29 @@ class Client extends \SoapClient {
     }
   }
 
+  // Convert MemberSuite fields into a nicer PHP array.
+  function msConvertFieldsToArray($Fields) {
+    $out = array();
+    foreach ($Fields->KeyValueOfstringanyType as $field) {
+      $out[$field->Key] = $field->Value;
+    }
+    return $out;
+  }
+
+  /**
+   * Wrapper for ExecuteMSQL to modify the result so that it can be parsed.
+   */
+  function msExecuteMSQL($args) {
+    // This is not direct SQL, it is "MSQL".
+    $result = parent::ExecuteMSQL($args);
+
+    // Another MS quirk. "any" element needs to be wrapped in a root element.
+    $sxml = new \SimpleXMLElement('<xml>' . $result->ExecuteMSQLResult->ResultValue->SearchResult->Table->any . '</xml>');
+    $sxml->registerXPathNamespace('d', 'urn:schemas-microsoft-com:xml-diffgram-v1');
+    $data = $sxml->xpath('//NewDataSet');
+    return $data;
+  }
+
 }
 
 /**
